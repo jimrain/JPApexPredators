@@ -7,6 +7,7 @@
 import Foundation
 
 class Predators {
+    var allApexPredators: [ApexPredator] = []
     var apexPredators: [ApexPredator] = []
     
     init() {
@@ -20,7 +21,8 @@ class Predators {
                 let decoder = JSONDecoder()
                 // JSON is snake case but our struct uses camel case.
                 decoder.keyDecodingStrategy = .convertFromSnakeCase
-                apexPredators = try decoder.decode([ApexPredator].self, from: data)
+                allApexPredators = try decoder.decode([ApexPredator].self, from: data)
+                apexPredators = allApexPredators
             } catch {
                 print("Error decoding JSON data: \(error)")
             }
@@ -43,6 +45,16 @@ class Predators {
                 predator1.name < predator2.name
             } else {
                 predator1.id < predator2.id
+            }
+        }
+    }
+    
+    func filter(by type: APType) {
+        if type == .all {
+            apexPredators = allApexPredators
+        } else {
+            apexPredators = allApexPredators.filter { predator in
+                predator.type == type
             }
         }
     }
