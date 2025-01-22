@@ -12,6 +12,7 @@ struct PredatorDetail: View {
     let predator: ApexPredator
     
     @State var position: MapCameraPosition
+    @Namespace var namespace
     
     var body: some View {
         // Geometry gives me the exact size of the current device
@@ -59,9 +60,13 @@ struct PredatorDetail: View {
                     
                     // Current location
                     NavigationLink {
-                        Image(predator.image)
-                            .resizable()
-                            .scaledToFit()
+                        PredatorMap(position: .camera(MapCamera(
+                            centerCoordinate: predator.location,
+                            distance: 1000,
+                            heading: 250,
+                            pitch: 80)
+                        ))
+                        .navigationTransition(.zoom(sourceID: 1, in: namespace))
                     } label: {
                     Map(position: $position) {
                         Annotation(predator.name, coordinate: predator.location) {
@@ -89,6 +94,7 @@ struct PredatorDetail: View {
                     }
                     .clipShape(.rect(cornerRadius: 15))
                 }
+                .matchedTransitionSource(id: 1, in: namespace)
                     
                     // Appears in
                     Text("Appears In:")
