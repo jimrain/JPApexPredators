@@ -9,9 +9,21 @@ import Foundation
 class Predators {
     var allApexPredators: [ApexPredator] = []
     var apexPredators: [ApexPredator] = []
+    var allMovies: [String] = ["All"]
     
     init() {
         decodeApexPredatorData()
+        getAllMovies()
+    }
+    
+    func getAllMovies() {
+        for predator in allApexPredators {
+            for movie in predator.movies {
+                if !allMovies.contains(movie) {
+                    allMovies.append(movie)
+                }
+            }
+        }
     }
     
     func decodeApexPredatorData() {
@@ -55,6 +67,16 @@ class Predators {
         } else {
             apexPredators = allApexPredators.filter { predator in
                 predator.type == type
+            }
+        }
+    }
+    
+    // Important to filter movies after filtering types because this funtion operates on the
+    // apexPredators list mofified by the type filter. 
+    func filter(by movie: String) {
+        if movie != "All" {
+            apexPredators = apexPredators.filter { predator in
+                predator.movies.contains(movie)
             }
         }
     }

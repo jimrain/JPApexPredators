@@ -13,16 +13,19 @@ struct ContentView: View {
     
     @State var searchText: String = ""
     @State var alphabetical = false
-    @State var currentSelection = APType.all
+    @State var currentTypeSelection = APType.all
+    @State var currentMovieSelection = "All"
     
     var filteredDinos: [ApexPredator] {
-        predators.filter(by: currentSelection)
+        predators.filter(by: currentTypeSelection)
+        predators.filter(by: currentMovieSelection)
         predators.sort(by: alphabetical)
         return predators.search(for: searchText)
     }
     
     var body: some View {
         // NavigationStack is like a zstack but with nav features.
+        // let _ = print("\(predators.allMovies)")
         NavigationStack {
             // List is like a foreach but has some nice features like scrolling.
             List(filteredDinos) { predator in
@@ -79,11 +82,23 @@ struct ContentView: View {
                             .symbolEffect(.bounce, value: alphabetical)
                     }
                 }
+                
                 ToolbarItem(placement: .topBarTrailing) {
                     Menu {
-                        Picker("Filter", selection: $currentSelection.animation()) {
+                        Text("Type")
+                            .font(.largeTitle)
+                            .background(.white)
+                        Picker("Filter", selection: $currentTypeSelection.animation()) {
                             ForEach(APType.allCases) { type in
                                 Label(type.rawValue.capitalized, systemImage: type.icon)
+                            }
+                        }
+                        Text("Movies")
+                            .font(.largeTitle)
+                            .background(.white)
+                        Picker("Filter", selection: $currentMovieSelection) {
+                            ForEach(predators.allMovies, id: \.self) { movie in
+                                Label(movie, systemImage: "film")
                             }
                         }
                     } label: {

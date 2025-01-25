@@ -11,6 +11,7 @@ import MapKit
 struct PredatorMap: View {
     @State var position: MapCameraPosition
     @State var satellite = false
+    @State var showInfoCard: Bool = false
     
     let predators = Predators()
     
@@ -24,7 +25,22 @@ struct PredatorMap: View {
                         .frame(height: 100)
                         .shadow(color: .white, radius: 3)
                         .scaleEffect(x: -1)
+                        .onTapGesture {
+                            showInfoCard.toggle()
+                        }
+                        .sheet(isPresented: $showInfoCard) {
+                            PredatorCard(predator: predator)
+                                .frame(maxWidth: 300, maxHeight: 300)
+                                .clipShape(RoundedRectangle(cornerRadius: 10))
+                                .shadow(color: Color(white: 0.7), radius: 20)
+                                .presentationBackground {
+                                    Rectangle()
+                                        .fill(.ultraThinMaterial)
+                                        .background(.black.opacity(0.2))
+                                }
+                        }
                 }
+                
             }
         }
         .mapStyle(satellite ? .imagery(elevation: .realistic) : .standard(elevation: .realistic))
@@ -43,6 +59,7 @@ struct PredatorMap: View {
             }
         }
         .toolbarBackground(.automatic)
+        
     }
 }
 

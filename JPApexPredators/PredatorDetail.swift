@@ -12,6 +12,8 @@ struct PredatorDetail: View {
     let predator: ApexPredator
     
     @State var position: MapCameraPosition
+    @State var showImage: Bool = false
+    
     @Namespace var namespace
     
     var body: some View {
@@ -25,6 +27,9 @@ struct PredatorDetail: View {
                     Image(predator.type.rawValue)
                         .resizable()
                         .scaledToFit()
+                        .onTapGesture {
+                            showImage.toggle()
+                        }
                         .overlay {
                             LinearGradient(stops: [
                                 Gradient.Stop(color: .clear, location: 0),
@@ -49,6 +54,9 @@ struct PredatorDetail: View {
                         .scaleEffect(x: -1)
                         .shadow(color: .black, radius: 7)
                         .offset(y:20)
+                        .onTapGesture {
+                            showImage.toggle()
+                        }
                 }
                 
                 VStack(alignment: .leading) {
@@ -138,6 +146,9 @@ struct PredatorDetail: View {
             }
             .ignoresSafeArea()
             .toolbarBackground(.automatic)
+            .sheet(isPresented: $showImage) {
+                PredatorImage(predator: predator)
+            }
         }
     }
 }
