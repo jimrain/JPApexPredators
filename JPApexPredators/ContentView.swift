@@ -17,6 +17,7 @@ struct ContentView: View {
     @State var currentMovieSelection = "All"
     
     var filteredDinos: [ApexPredator] {
+        predators.filterOutDeleted()
         predators.filter(by: currentTypeSelection)
         predators.filter(by: currentMovieSelection)
         predators.sort(by: alphabetical)
@@ -63,6 +64,15 @@ struct ContentView: View {
                             
                             
                         }
+                    }
+                }
+                .swipeActions {
+                    Button(role: .destructive) {
+                        withAnimation(.linear(duration: 0.4)) {
+                            predators.removePredator(id: predator.id)
+                        }
+                    } label: {
+                        Label("Delete", systemImage: "trash")
                     }
                 }
             }

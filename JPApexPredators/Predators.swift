@@ -11,6 +11,9 @@ class Predators {
     var apexPredators: [ApexPredator] = []
     var allMovies: [String] = ["All"]
     
+    var deletedPredators: [Int] = []
+    let defaults = UserDefaults.standard
+    
     init() {
         decodeApexPredatorData()
         getAllMovies()
@@ -27,6 +30,8 @@ class Predators {
     }
     
     func decodeApexPredatorData() {
+        deletedPredators = defaults.array(forKey: "deletedPredators") as? [Int] ?? []
+        
         if let url = Bundle.main.url(forResource: "jpapexpredators", withExtension: "json") {
             do {
                 let data = try Data(contentsOf: url)
@@ -61,6 +66,10 @@ class Predators {
         }
     }
     
+    func filterOutDeleted() {
+        allApexPredators = allApexPredators.filter { !deletedPredators.contains($0.id) }
+    }
+    
     func filter(by type: APType) {
         if type == .all {
             apexPredators = allApexPredators
@@ -78,6 +87,13 @@ class Predators {
             apexPredators = apexPredators.filter { predator in
                 predator.movies.contains(movie)
             }
+        }
+    }
+    
+    func removePredator(id: Int) {
+        if !deletedPredators.contains(id) {
+            deletedPredators.append(id)
+            defaults.set(deletedPredators, forKey: "deletedPredators")
         }
     }
 }
